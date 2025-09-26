@@ -16,7 +16,12 @@ export const TasksAppWithReducer = () => {
   const [state, dispatch] = useReducer(taskReducer, getInitialState());
   const [variant, setVariant] = useState<"default" | "destructive">("default");
   //!EXTRAEMOS LOS DATOS DEL ESTADO QUE NOS DEVUELVE useReducer
-  const { todos, completed: completedCount, pending: totalCount } = state;
+  const {
+    todos,
+    completed: completedCount,
+    pending: totalCount,
+    length,
+  } = state;
   //guardamos en local storage cada vez que el estado de las tareas cambia
   useEffect(() => {
     localStorage.setItem("tasks_app", JSON.stringify(todos));
@@ -112,8 +117,7 @@ export const TasksAppWithReducer = () => {
               </div>
             </CardContent>
           </Card>
-          {/* Mostramos el progreso de las tareas completadas */}
-          {totalCount > 0 && (
+          {completedCount > 0 && (
             <Card className="mb-6 shadow-lg border-0 bg-white/80 backdrop-blur-sm">
               <CardHeader className="pb-3">
                 <CardTitle className="text-lg font-semibold text-slate-700">
@@ -123,11 +127,9 @@ export const TasksAppWithReducer = () => {
               <CardContent className="pt-0">
                 <div className="flex items-center justify-between text-sm text-slate-600 mb-2">
                   <span>
-                    {completedCount} de {todos.length} completadas
+                    {completedCount} de {length} completadas
                   </span>
-                  <span>
-                    {Math.round((completedCount / todos.length) * 100)}%
-                  </span>
+                  <span>{Math.round((completedCount / length) * 100)}%</span>
                 </div>
                 <div className="w-full bg-slate-200 rounded-full h-2">
                   <div
