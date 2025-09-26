@@ -15,17 +15,14 @@ export const TasksAppWithReducer = () => {
   const [alert, setAlert] = useState<boolean>(false); //state para mostrar la alerta
   const [state, dispatch] = useReducer(taskReducer, getInitialState());
   const [variant, setVariant] = useState<"default" | "destructive">("default");
-  //!EXTRAEMOS LOS DATOS DEL ESTADO QUE NOS DEVUELVE useReducer
-  const {
-    todos,
-    completed: completedCount,
-    pending: totalCount,
-    length,
-  } = state;
+  const { todos, completed: completedCount, pending, length } = state;
+
   //guardamos en local storage cada vez que el estado de las tareas cambia
   useEffect(() => {
     localStorage.setItem("tasks_app", JSON.stringify(todos));
   }, [todos]);
+  //calculamos el progreso de las tareas completadas cada vez que cambia el numero de tareas completadas o el total de tareas
+
   const addTodo = () => {
     if (inputValue.length === 0) return; //si el input no contiene texto noo hacemos nada
     //añadimos la tarea
@@ -47,6 +44,7 @@ export const TasksAppWithReducer = () => {
         setAlert(false);
       }, 2000); //la alerta desaparece despues de 2 segundos
       //añadimos la tarea
+
       dispatch({ type: "ADD_TODO", payload: inputValue }); //le pasamos el texto de la tarea como payload
       //vaciamos la caja de texto
       setInputValue("");
@@ -55,11 +53,13 @@ export const TasksAppWithReducer = () => {
 
   const toggleTodo = (id: number) => {
     // le pasamos el id a dispatch para cambiar el estado completado de la tarea
+
     dispatch({ type: "TOGGLE_TODO", payload: id });
   };
 
   const deleteTodo = (id: number) => {
     //eliminamos la tarea
+
     dispatch({ type: "DELETE_TODO", payload: id });
   };
 
@@ -117,7 +117,8 @@ export const TasksAppWithReducer = () => {
               </div>
             </CardContent>
           </Card>
-          {completedCount > 0 && (
+          {/* Mostramos el progreso de las tareas completadas */}
+          <>
             <Card className="mb-6 shadow-lg border-0 bg-white/80 backdrop-blur-sm">
               <CardHeader className="pb-3">
                 <CardTitle className="text-lg font-semibold text-slate-700">
@@ -125,23 +126,36 @@ export const TasksAppWithReducer = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent className="pt-0">
-                <div className="flex items-center justify-between text-sm text-slate-600 mb-2">
-                  <span>
-                    {completedCount} de {length} completadas
-                  </span>
-                  <span>{Math.round((completedCount / length) * 100)}%</span>
-                </div>
-                <div className="w-full bg-slate-200 rounded-full h-2">
-                  <div
-                    className="bg-gradient-to-r from-green-400 to-green-500 h-2 rounded-full transition-all duration-300 ease-out"
-                    style={{
-                      width: `${(completedCount / todos.length) * 100}%`,
-                    }}
-                  />
-                </div>
+                {length > 0 ? (
+                  <>
+                    <div className="flex items-center justify-between text-sm text-slate-600 mb-2">
+                      <span>
+                        {completedCount} de {length} completadas
+                      </span>
+                      <span>
+                        {Math.round((completedCount / length) * 100)}%
+                      </span>
+                    </div>
+                    <div className="w-full bg-slate-200 rounded-full h-2">
+                      <div
+                        className="bg-gradient-to-r from-green-400 to-green-500 h-2 rounded-full transition-all duration-300 ease-out"
+                        style={{
+                          width: `${(completedCount / todos.length) * 100}%`,
+                        }}
+                      />
+                    </div>
+                  </>
+                ) : (
+                  <div className="text-center">
+                    <h2 className="text-lg font-semibold text-slate-700 mb-2">
+                      No hay tareas pendientes
+                    </h2>
+                  </div>
+                )}
               </CardContent>
             </Card>
-          )}
+          </>
+
           <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
             <CardHeader>
               <CardTitle className="text-lg font-semibold text-slate-700">
@@ -164,6 +178,7 @@ export const TasksAppWithReducer = () => {
               ) : (
                 // si hay tareas
                 <div className="space-y-2">
+                  <h2>Tareas pendientes {pending} </h2>
                   {todos.map((todo) => (
                     <div
                       key={todo.id}

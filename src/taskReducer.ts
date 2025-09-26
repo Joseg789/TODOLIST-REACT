@@ -103,10 +103,12 @@ const taskReducer = (state: TaskState, action: TaskAction): TaskState => {
               state.completed = state.completed + 1;
               state.pending = state.pending - 1;
             }
-            return { ...todo, completed: !todo.completed }; //cambiamos el estado de completado
+            return { ...todo, completed: !todo.completed }; //cambiamos el estado de completado de la tarea
           }
+
+          // si no es la tarea que queremos cambiar devolvemos la tarea sin cambios
           return todo;
-        }),
+        }), //MAP
       };
 
     case "DELETE_TODO": //eliminar tarea
