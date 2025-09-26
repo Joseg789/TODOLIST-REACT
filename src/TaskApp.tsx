@@ -77,15 +77,16 @@ export const TasksAppWithReducer = () => {
           </p>
         </div>
         <Card className="m-10 p-10 shadow-xl border-0 bg-white/80 backdrop-blur-sm ">
+          {/* Card para mostrar la hora y la fecha actual */}
+          <Card className="mb-6 shadow-xl border-0 bg-white/80 backdrop-blur-sm ">
+            <Time />
+          </Card>
+          {/* Card para mostrar las alertas */}
           {alert && (
             <Card className="p-4">
               <Alert variant={variant} />
             </Card>
           )}
-          {/* Card para mostrar la hora y la fecha actual */}
-          <Card className="mb-6 shadow-xl border-0 bg-white/80 backdrop-blur-sm ">
-            <Time />
-          </Card>
 
           {/* Card para añadir nuevas tareas */}
           <Card className="mb-6 shadow-lg border-0 bg-white/80 backdrop-blur-sm">
