@@ -21,7 +21,6 @@ export const TasksAppWithReducer = () => {
   useEffect(() => {
     localStorage.setItem("tasks_app", JSON.stringify(todos));
   }, [todos]);
-  //calculamos el progreso de las tareas completadas cada vez que cambia el numero de tareas completadas o el total de tareas
 
   const addTodo = () => {
     if (inputValue.length === 0) return; //si el input no contiene texto noo hacemos nada
@@ -34,7 +33,7 @@ export const TasksAppWithReducer = () => {
       setVariant("destructive");
       setTimeout(() => {
         setAlert(false);
-      }, 2000); //la alerta desaparece despues de 2 segundos
+      }, 3000); //la alerta desaparece despues de 3 segundos
       setInputValue("");
     } else {
       //mostramos la alerta
@@ -42,7 +41,7 @@ export const TasksAppWithReducer = () => {
       setVariant("default");
       setTimeout(() => {
         setAlert(false);
-      }, 2000); //la alerta desaparece despues de 2 segundos
+      }, 3000); //la alerta desaparece despues de 2 segundos
       //añadimos la tarea
 
       dispatch({ type: "ADD_TODO", payload: inputValue }); //le pasamos el texto de la tarea como payload
@@ -53,13 +52,11 @@ export const TasksAppWithReducer = () => {
 
   const toggleTodo = (id: number) => {
     // le pasamos el id a dispatch para cambiar el estado completado de la tarea
-
     dispatch({ type: "TOGGLE_TODO", payload: id });
   };
 
   const deleteTodo = (id: number) => {
     //eliminamos la tarea
-
     dispatch({ type: "DELETE_TODO", payload: id });
   };
 
@@ -71,7 +68,7 @@ export const TasksAppWithReducer = () => {
 
   return (
     // layout principal
-    <div className="min-h-screen  shadow-2xl bg-gradient-to-br from-[#00a6d3]/20 to-[#00a6d3] p-4">
+    <div className="min-h-screen  shadow-2xl p-4">
       <div className="mx-auto max-w-2xl">
         <div className="mb-8 text-center">
           <h1 className="text-4xl font-bold text-slate-800 mb-2">
@@ -81,9 +78,9 @@ export const TasksAppWithReducer = () => {
             Mantén tus tareas organizadas y consigue hacerlas
           </p>
         </div>
-        <Card className="m-10 p-10 shadow-xl border-0 bg-white/80 backdrop-blur-sm ">
+        <Card className="m-10 p-10 shadow-2xl border-0  bg-[#a8f0b9] backdrop-blur-sm ">
           {/* Card para mostrar la hora y la fecha actual */}
-          <Card className="mb-6 shadow-xl border-0 bg-white/80 backdrop-blur-sm ">
+          <Card className="mb-6 shadow-xl border-0 bg-white/80 backdrop-blur-sm  ">
             <Time />
           </Card>
           {/* Card para mostrar las alertas */}
@@ -96,7 +93,7 @@ export const TasksAppWithReducer = () => {
           {/* Card para añadir nuevas tareas */}
           <Card className="mb-6 shadow-lg border-0 bg-white/80 backdrop-blur-sm">
             <CardContent className="p-6">
-              <div className="flex gap-2">
+              <div className="flex gap-2 text-[#073015]">
                 {/* Input para añadir nuevas tareas */}
                 <Input
                   placeholder="Añade una nueva tarea..."
@@ -118,7 +115,7 @@ export const TasksAppWithReducer = () => {
             </CardContent>
           </Card>
           {/* Mostramos el progreso de las tareas completadas */}
-          <>
+          {completedCount > 0 && (
             <Card className="mb-6 shadow-lg border-0 bg-white/80 backdrop-blur-sm">
               <CardHeader className="pb-3">
                 <CardTitle className="text-lg font-semibold text-slate-700">
@@ -126,7 +123,7 @@ export const TasksAppWithReducer = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent className="pt-0">
-                {length > 0 ? (
+                {completedCount > 0 ? (
                   <>
                     <div className="flex items-center justify-between text-sm text-slate-600 mb-2">
                       <span>
@@ -154,7 +151,8 @@ export const TasksAppWithReducer = () => {
                 )}
               </CardContent>
             </Card>
-          </>
+          )}
+          {/* Card para mostrar las tareas */}
 
           <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
             <CardHeader>

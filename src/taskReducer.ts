@@ -91,25 +91,48 @@ const taskReducer = (state: TaskState, action: TaskAction): TaskState => {
         todos: [...state.todos, newTodo], //agregamos la nueva tarea al array de tareas
       };
 
-    case "TOGGLE_TODO": //cambiar estado completado de la tarea
-      return {
-        ...state, //copiamos el estado actual
-        todos: state.todos.map((todo) => {
-          if (todo.id === action.payload) {
-            if (todo.completed) {
-              state.completed = state.completed - 1;
-              state.pending = state.pending + 1;
-            } else {
-              state.completed = state.completed + 1;
-              state.pending = state.pending - 1;
-            }
-            return { ...todo, completed: !todo.completed }; //cambiamos el estado de completado de la tarea
-          }
+    //!esto no se debe hacer porque estaria mutando el estado directamente lo dejo de ejemplo
+    // case "TOGGLE_TODO": //cambiar estado completado de la tarea
+    //   return {
+    //     ...state, //copiamos el estado actual
+    //     todos: state.todos.map((todo) => {
+    //       if (todo.id === action.payload) {
+    //         if (todo.completed) {
+    //           state.completed = state.completed - 1;//!no se debe hacer
+    //           state.pending = state.pending + 1;//!no se debe hacer
+    //         } else {
+    //           state.completed = state.completed + 1;//!no se debe hacer
+    //           state.pending = state.pending - 1;//!no se debe hacer
+    //         }
+    //         return { ...todo, completed: !todo.completed }; //cambiamos el estado de completado de la tarea
+    //       }
+    //       // si no es la tarea que queremos cambiar devolvemos la tarea sin cambios
+    //       return todo;
+    //     }), //MAP
+    //   };
 
-          // si no es la tarea que queremos cambiar devolvemos la tarea sin cambios
-          return todo;
-        }), //MAP
+    case "TOGGLE_TODO": {
+      //cambiar estado completado de la tarea
+      //creamos un nuevo array de tareas con el estado cambiado
+      const updatedTodos = state.todos.map((todo) => {
+        if (todo.id === action.payload) {
+          return { ...todo, completed: !todo.completed };
+        }
+        return todo;
+      }); //map
+
+      const completedTodos = updatedTodos.filter(
+        (todo) => todo.completed
+      ).length; //actualizamos la cantidad de tareas completadas
+      const pendingTodos = updatedTodos.length - completedTodos; //actualizamos la cantidad de tareas pendientes
+      //retornamos el nuevo estado con los contadores actualizados
+      return {
+        ...state,
+        todos: updatedTodos,
+        completed: completedTodos, //actualizamos la cantidad de tareas completadas
+        pending: pendingTodos, //actualizamos la cantidad de tareas pendientes
       };
+    }
 
     case "DELETE_TODO": //eliminar tarea
       //elimninamos el todo
